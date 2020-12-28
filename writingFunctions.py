@@ -39,20 +39,17 @@ def listParser(listOfStrings):
             if listOfStrings.index(element) != (len(listOfStrings) - 1) :
                 thisRowString += " & "
     else : # There are multilines
-        # \multicolumn{9}{|c|}{Black Food Coloring}
         for elementIndex in range(0, len(listOfStrings) - 1) :
             # Check for trailing '' after element
             if listOfStrings[elementIndex] != "" and listOfStrings[elementIndex + 1] == "":
                 multiLineString = listOfStrings[elementIndex]
                 # Continue until '' characters end to find the size of multicolumn
                 multiLineCount = countEmptyStrings(listOfStrings[(elementIndex + 1):])
-                thisRowString += "\\multicolumn{" + str(multiLineCount) + "}{|c|}{" + multiLineString + "}"
+                thisRowString += "\\multicolumn{" + str(multiLineCount) + "}{|c|}{" + multiLineString + "} & "
             elif listOfStrings[elementIndex] != "" and listOfStrings[elementIndex + 1] != "" :
-                thisRowString += listOfStrings[elementIndex]
-            # Add the cell divider in between elements    
-            if elementIndex != (len(listOfStrings) - 1):
-                thisRowString += " & "
-
+                thisRowString += listOfStrings[elementIndex] + " & "
+        # Add last element
+        thisRowString += listOfStrings[-1]
                 
 
     # Add the necessary LaTeX syntax to the end of the row
@@ -97,3 +94,4 @@ if __name__ == '__main__':
         data.append(rowStringToList(userInput[x]))
 
     print(listParser(data[0]))
+    print(listParser(data[1]))
