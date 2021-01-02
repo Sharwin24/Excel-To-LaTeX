@@ -31,6 +31,14 @@ def rowStringToList(rowString):
 def listParser(listOfStrings):
     thisRowString = ""
 
+    specialChars = [ "$", "&" , "#" , "%" ]
+    # Check for special characters and modify string to include '\'
+    for stringToCheckIndex in range(len(listOfStrings)):
+        for index in range(len(specialChars)):
+            indexOfChar = listOfStrings[stringToCheckIndex].find(specialChars[index])
+            if indexOfChar != -1:
+                listOfStrings[stringToCheckIndex] = listOfStrings[stringToCheckIndex][:indexOfChar] + "\\" + listOfStrings[stringToCheckIndex][indexOfChar:]
+
     # If there is no multilines
     if listOfStrings.count('') == 0 :
         for element in listOfStrings :
@@ -50,12 +58,12 @@ def listParser(listOfStrings):
                 thisRowString += listOfStrings[elementIndex] + " & "
         # Add last element
         thisRowString += listOfStrings[-1]
-                
 
     # Add the necessary LaTeX syntax to the end of the row
     thisRowString += " \\\\ \hline"
 
     return thisRowString
+    
 
 def countEmptyStrings(listOfStrings):
     num = 1
@@ -78,6 +86,16 @@ if __name__ == '__main__':
     # userInput variable will save each row in an element of an array with a \n at the
     userInput = sys.stdin.readlines()
 
+    # Get the caption string from the user
+    captionString = input("Enter a caption for the table: ")
+
+    # Get a width from the user
+    widthString = input("Enter in inches how wide you want the table\nLeave blank for a default of the page width: ")
+    if widthString.isnumeric():
+        widthString += "in" 
+    else:
+        widthString = "\\textwidth"
+
     # print(userInput)
     # ['Header\t\tTwo\t3\t4\n', 'row\tValue\temptySpace\t0.456\t321.45\n']
 
@@ -85,13 +103,32 @@ if __name__ == '__main__':
     numberOfRows = len(userInput)
     numberOfCols = userInput[0].count("\t") + 1
 
-    # Create list of list-of-strings
-    # List[ ["String", "String"] , ["String"] , ["String"] ]
-
     data = []
 
     for x in range(numberOfRows):
         data.append(rowStringToList(userInput[x]))
 
-    print(listParser(data[0]))
-    print(listParser(data[1]))
+    # Print the table text
+    divider = "".center(75,"=")
+    print("Here is the LaTeX code for your table:\n")
+    print(divider)
+    finalOutput = ""
+    finalOutput += "\\begin{table}[H]\n\t\\centering\n\t\\resizebox{"+ widthString + "}{!}\n\t{%\n\t\t\\begin{tabular}{"
+
+    # Add |c| markers for number of cols
+    for columns in range(numberOfCols):
+        finalOutput += "|c"
+    finalOutput += "|}\n\t\t\t"
+
+    # Start the table contents itself
+    finalOutput += "\\hline\n\t\t\t"
+    for index in range(len(data)):
+        finalOutput += listParser(data[index])
+        if index != (len(data) - 1):
+            finalOutput += "\n\t\t\t"
+
+    # Print the end of the table environment
+    finalOutput += "\n\t\t\\end{tabular}%\n\t}\n\t\\caption{" + captionString + "}\n\t\\label{tab:my_label}\n\end{table}"
+
+    print(finalOutput)
+    print(divider)
