@@ -64,7 +64,8 @@ def listParser(listOfStrings):
 
     return thisRowString
     
-
+# Counts the total number of '' in the given list
+# A list is only sent to this method if it contains at least one '' character
 def countEmptyStrings(listOfStrings):
     num = 1
 
@@ -80,55 +81,4 @@ def countEmptyStrings(listOfStrings):
 # Main function
 if __name__ == '__main__':
 
-    # Save User Input to a String
-    print("After pasting text, use [Ctrl+Z and ENTER] to finish output")
-    print("Copy and paste text: ")
-    # userInput variable will save each row in an element of an array with a \n at the
-    userInput = sys.stdin.readlines()
-
-    # Get the caption string from the user
-    captionString = input("Enter a caption for the table: ")
-
-    # Get a width from the user
-    widthString = input("Enter in inches how wide you want the table\nLeave blank for a default of the page width: ")
-    if widthString.isnumeric():
-        widthString += "in" 
-    else:
-        widthString = "\\textwidth"
-
-    # print(userInput)
-    # ['Header\t\tTwo\t3\t4\n', 'row\tValue\temptySpace\t0.456\t321.45\n']
-
-    # Create a 2D Array to store data
-    numberOfRows = len(userInput)
-    numberOfCols = userInput[0].count("\t") + 1
-
-    data = []
-
-    for x in range(numberOfRows):
-        data.append(rowStringToList(userInput[x]))
-
-    # Print the table text
-    divider = "".center(75,"=")
-    print("Here is the LaTeX code for your table:\n")
-    print(divider)
-    finalOutput = ""
-    finalOutput += "\\begin{table}[H]\n\t\\centering\n\t\\resizebox{"+ widthString + "}{!}\n\t{%\n\t\t\\begin{tabular}{"
-
-    # Add |c| markers for number of cols
-    for columns in range(numberOfCols):
-        finalOutput += "|c"
-    finalOutput += "|}\n\t\t\t"
-
-    # Start the table contents itself
-    finalOutput += "\\hline\n\t\t\t"
-    for index in range(len(data)):
-        finalOutput += listParser(data[index])
-        if index != (len(data) - 1):
-            finalOutput += "\n\t\t\t"
-
-    # Print the end of the table environment
-    finalOutput += "\n\t\t\\end{tabular}%\n\t}\n\t\\caption{" + captionString + "}\n\t\\label{tab:my_label}\n\end{table}"
-
-    print(finalOutput)
-    print(divider)
+    # Test methods here
