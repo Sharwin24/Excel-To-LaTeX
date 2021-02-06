@@ -31,7 +31,7 @@ def rowStringToList(rowString):
 def listParser(listOfStrings):
     thisRowString = ""
 
-    specialChars = [ "$", "&" , "#" , "%" ]
+    specialChars = ["&" , "#" , "%" ]
     # Check for special characters and modify string to include '\'
     for stringToCheckIndex in range(len(listOfStrings)):
         for index in range(len(specialChars)):
@@ -77,15 +77,19 @@ def countEmptyStrings(listOfStrings):
     # If the rest of the strings are empty, then return the final num
     return num
 
-# Main function
-if __name__ == '__main__':
+def userInputTo2DArray(userInput):
+    # Create a 2D Array to store data
+    numberOfRows = len(userInput)
+    numberOfCols = userInput[0].count("\t") + 1
 
-    # Save User Input to a String
-    print("After pasting text, use [Ctrl+Z and ENTER] to finish output")
-    print("Copy and paste text: ")
-    # userInput variable will save each row in an element of an array with a \n at the
-    userInput = sys.stdin.readlines()
+    data = []
 
+    for x in range(numberOfRows):
+        data.append(rowStringToList(userInput[x]))
+    
+    return data
+
+def LaTeXConvert(userInput):
     # Get the caption string from the user
     captionString = input("Enter a caption for the table: ")
 
@@ -99,24 +103,16 @@ if __name__ == '__main__':
     # print(userInput)
     # ['Header\t\tTwo\t3\t4\n', 'row\tValue\temptySpace\t0.456\t321.45\n']
 
-    # Create a 2D Array to store data
-    numberOfRows = len(userInput)
-    numberOfCols = userInput[0].count("\t") + 1
-
-    data = []
-
-    for x in range(numberOfRows):
-        data.append(rowStringToList(userInput[x]))
+    data = userInputTo2DArray(userInput)
 
     # Print the table text
     divider = "".center(75,"=")
     print("Here is the LaTeX code for your table:\n")
     print(divider)
-    finalOutput = ""
-    finalOutput += "\\begin{table}[H]\n\t\\centering\n\t\\resizebox{"+ widthString + "}{!}\n\t{%\n\t\t\\begin{tabular}{"
+    finalOutput = "\\begin{table}[H]\n\t\\centering\n\t\\resizebox{"+ widthString + "}{!}\n\t{%\n\t\t\\begin{tabular}{"
 
     # Add |c| markers for number of cols
-    for columns in range(numberOfCols):
+    for columns in range(userInput[0].count("\t") + 1):
         finalOutput += "|c"
     finalOutput += "|}\n\t\t\t"
 
@@ -132,3 +128,76 @@ if __name__ == '__main__':
 
     print(finalOutput)
     print(divider)
+
+def truthTableRow(listOfValues):
+    # Input is a list of strings
+    # ['p', 'q', '! q ', 'q v (! q)', '(q v (! q)) & p']
+    # Return a string representing this row
+    tableRowString = "("
+    oneSpace = " "
+    for char in listOfValues:
+        # For first row, header spaces determine number of spaces for T F rows
+        if len(char) == 1 and char != "T":
+            tableRowString += char + 3 * oneSpace
+        elif len(char) > 1 and char != "NIL":
+            tableRowString += "(" + char + ")" + oneSpace
+        
+        if char == "T":
+            tableRowString += char + 5 * oneSpace
+        elif char == "NIL":
+            tableRowString += char + 3 * oneSpace
+    tableRowString += ")"
+    return tableRowString
+
+
+def Acl2sConvert(userInput):
+    data = userInputTo2DArray(userInput)
+
+    # data = List of list-of-strings 
+    # Iterate through data, and for each los, create a string for that row
+    finalOutput = "'("
+    for i in data:
+        finalOutput += truthTableRow(i) + "\n"
+        if i == data[len(data) - 1]:
+            finalOutput += truthTableRow(i) + ")"
+    
+    print(finalOutput)
+    
+    # Example input and output
+    # Input would be :
+    # p	q	! q 	q v (! q)	(q v (! q)) & p
+    # T	T	NIL	T	T 
+    # T	NIL	T	T	T 
+    # NIL	T	NIL	T	NIL
+    # NIL	NIL	T	T	NIL
+    # Output would be: 
+    # '((p	q	(! q) 	(q v (! q))	((q v (! q)) & p))
+    # (T	T	NIL	T	T)
+    # (T	NIL	T	T	T)
+    # (NIL	T	NIL	T	NIL)
+    # (NIL	NIL	T	T	NIL))
+    # Every row starts and ends with parenthesis
+    # Elements are wrapped in parenthesis unless their length is 1,
+    # Start with ['(] and end it with [)]
+
+
+
+# Main function
+if __name__ == '__main__':
+    # Save User Input to a String
+    print("Copy and paste text: ")
+    print("After pasting text, use [Ctrl+Z and ENTER] to finish output")
+    # userInput variable will save each row in an element of an array with a \n at the
+    userInput = sys.stdin.readlines()
+    acceptingResponse = True
+    while acceptingResponse:
+        # Ask user for the type of conversion they want
+        convertType = input("Enter the type of conversion: Options: [latex] [acl2s]: ")
+        if convertType == "latex":
+            LaTeXConvert(userInput)
+            acceptingResponse = False
+        elif convertType == "acl2s":
+            Acl2sConvert(userInput)
+            acceptingResponse = False
+        else:
+            print("Invalid option, try again")
