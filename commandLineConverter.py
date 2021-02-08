@@ -158,8 +158,7 @@ def Acl2sConvert(userInput):
     finalOutput = "'("
     for i in data:
         finalOutput += truthTableRow(i) + "\n"
-        if i == data[len(data) - 1]:
-            finalOutput += truthTableRow(i) + ")"
+    finalOutput += ")"
     
     print(finalOutput)
     
