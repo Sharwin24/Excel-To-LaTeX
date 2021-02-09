@@ -5,23 +5,27 @@ import sys
 # Takes in a string with \t and \n markers and returns a list of strings
 # with each element being the substrings in between the \t markers
 def rowStringToList(rowString):
+    print(rowString)
     rowList = []
+    rowList = rowString.split("\t")
+    rowList[-1] = rowList[-1][:-1]
+    print(rowList)
 
-    # Loop ends once the string only contains the newline
-    while (rowString != "\n"):
-        indexOfTab = rowString.find("\t")  # find the index of the first \t
-        if indexOfTab == -1:  # If there is none left, break from loop
-            break
-        # Else, continue to append to rowList
-        rowList.append(rowString[0:indexOfTab])  # Add the string until the \t
-        # Delete everything before the \t
-        rowString = rowString[(indexOfTab+1):]
-        # print(rowList)
-        # print(rowString)
-    # Return the list of strings
+    # # Loop ends once the string only contains the newline
+    # while (rowString != "\n"):
+    #     indexOfTab = rowString.find("\t")  # find the index of the first \t
+    #     if indexOfTab == -1:  # If there is none left, break from loop
+    #         break
+    #     # Else, continue to append to rowList
+    #     rowList.append(rowString[0:indexOfTab])  # Add the string until the \t
+    #     # Delete everything before the \t
+    #     rowString = rowString[(indexOfTab+1):]
+    #     print(rowList)
+    #     print(rowString)
+    # # Return the list of strings
 
     # Add the last element before the '\n'
-    rowList.append(rowString[0:(len(rowString) - 1)])
+    #rowList.append(rowString[0:(len(rowString) - 1)])
 
     return rowList
 
@@ -30,22 +34,27 @@ def rowStringToList(rowString):
 # Returns a string with the LaTeX code for that row
 def listParser(listOfStrings):
     thisRowString = ""
+    listOfStrings = [x.replace("&", "\&").replace("#", "\#").replace("%", "\%") for x in listOfStrings]
 
-    specialChars = ["&" , "#" , "%" ]
-    # Check for special characters and modify string to include '\'
-    for stringToCheckIndex in range(len(listOfStrings)):
-        for index in range(len(specialChars)):
-            indexOfChar = listOfStrings[stringToCheckIndex].find(specialChars[index])
-            if indexOfChar != -1:
-                listOfStrings[stringToCheckIndex] = listOfStrings[stringToCheckIndex][:indexOfChar] + "\\" + listOfStrings[stringToCheckIndex][indexOfChar:]
+    list = [1, 2, 3, 4, 5]
+    list = [str(x)  for x in list if x % 2 == 0]
+
+    # specialChars = ["&" , "#" , "%" ]
+    # # Check for special characters and modify string to include '\'
+    # for stringToCheckIndex in range(len(listOfStrings)):
+    #     for index in range(len(specialChars)):
+    #         indexOfChar = listOfStrings[stringToCheckIndex].find(specialChars[index])
+    #         if indexOfChar != -1:
+    #             listOfStrings[stringToCheckIndex] = listOfStrings[stringToCheckIndex][:indexOfChar] + "\\" + listOfStrings[stringToCheckIndex][indexOfChar:]
 
     # If there is no multilines
     if listOfStrings.count('') == 0 :
-        for element in listOfStrings :
-            # Add the element itself to the string
-            thisRowString += element
-            if listOfStrings.index(element) != (len(listOfStrings) - 1) :
-                thisRowString += " & "
+        thisRowString = " & ".join(listOfStrings)
+        # for element in listOfStrings :
+        #     # Add the element itself to the string
+        #     thisRowString += element
+        #     if listOfStrings.index(element) != (len(listOfStrings) - 1) :
+        #         thisRowString += " & "
     else : # There are multilines
         for elementIndex in range(0, len(listOfStrings) - 1) :
             # Check for trailing '' after element
