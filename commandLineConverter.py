@@ -5,12 +5,9 @@ import sys
 # Takes in a string with \t and \n markers and returns a list of strings
 # with each element being the substrings in between the \t markers
 def rowStringToList(rowString):
-    print(rowString)
-    rowList = []
     rowList = rowString.split("\t")
     rowList[-1] = rowList[-1][:-1]
-    print(rowList)
-
+    
     # # Loop ends once the string only contains the newline
     # while (rowString != "\n"):
     #     indexOfTab = rowString.find("\t")  # find the index of the first \t
@@ -35,9 +32,6 @@ def rowStringToList(rowString):
 def listParser(listOfStrings):
     thisRowString = ""
     listOfStrings = [x.replace("&", "\&").replace("#", "\#").replace("%", "\%") for x in listOfStrings]
-
-    list = [1, 2, 3, 4, 5]
-    list = [str(x)  for x in list if x % 2 == 0]
 
     # specialChars = ["&" , "#" , "%" ]
     # # Check for special characters and modify string to include '\'
@@ -187,8 +181,6 @@ def Acl2sConvert(userInput):
     # Every row starts and ends with parenthesis
     # Elements are wrapped in parenthesis unless their length is 1,
     # Start with ['(] and end it with [)]
-
-
 
 # Main function
 if __name__ == '__main__':
