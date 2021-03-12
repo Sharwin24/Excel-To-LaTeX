@@ -77,8 +77,4 @@ def countEmptyStrings(listOfStrings):
             return num
     # If the rest of the strings are empty, then return the final num
     return num
-
-# Main function
-if __name__ == '__main__':
-
-    # Test methods here
+    
