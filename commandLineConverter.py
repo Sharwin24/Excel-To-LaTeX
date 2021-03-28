@@ -186,7 +186,7 @@ def Acl2sConvert(userInput):
 if __name__ == '__main__':
     # Save User Input to a String
     print("Copy and paste text: ")
-    print("After pasting text, use [Ctrl+Z and ENTER] to finish output")
+    print("After pasting text, use [Ctrl+Z and ENTER , Ctrl+D] to finish output for [Windows , MAC]")
     # userInput variable will save each row in an element of an array with a \n at the
     userInput = sys.stdin.readlines()
     acceptingResponse = True
